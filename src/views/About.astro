@@ -89,11 +89,6 @@ const t = useUi(lang);
       <div>
         <h2 class="h2">{c.logoHeading}</h2>
         <p class="lead logo-text">{c.logoText}</p>
-        <ul class="swatches" aria-label="Brand colours">
-          <li><span style="background:#004aad"></span>#004AAD</li>
-          <li><span style="background:#000000"></span>#000000</li>
-          <li><span style="background:#fffbfa; border:1px solid var(--line)"></span>#FFFBFA</li>
-        </ul>
       </div>
     </div>
   </section>
@@ -229,32 +224,7 @@ const t = useUi(lang);
   }
 
   .logo-text {
-    margin-block: 16px 24px;
+    margin-block-start: 16px;
   }
 
-  .swatches {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    list-style: none;
-    direction: ltr;
-  }
-
-  [dir='rtl'] .swatches {
-    justify-content: flex-end;
-  }
-
-  .swatches li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .swatches span {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-  }
 </style>
