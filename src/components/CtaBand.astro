@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+import Stripes from './Stripes.astro';
+
+interface Props {
+  heading: string;
+  text: string;
+  primary: { label: string; href: string };
+  secondary?: { label: string; href: string };
+}
+const { heading, text, primary, secondary } = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <Stripes tone="blue" />
+      <h2>{heading}</h2>
+      <p>{text}</p>
+      <div class="btn-row">
+        <a class="btn btn--light" href={primary.href}>{primary.label}<Icon name="arrow" class="icon--dir" /></a>
+        {secondary && <a class="btn btn--ghost-light" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,142 @@
+---
+// Contact form backed by Web3Forms (free plan). Submissions are emailed to the
+// address that owns WEB3FORMS_ACCESS_KEY — see src/config.ts.
+import { WEB3FORMS_ACCESS_KEY, site } from '../config';
+import { useUi, type EnquiryType } from '../i18n/ui';
+import { href, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  defaultType?: EnquiryType;
+  heading?: string;
+  id?: string;
+}
+
+const { lang, defaultType = 'general', heading, id = 'contact-form' } = Astro.props;
+const t = useUi(lang).form;
+const types = Object.entries(t.types) as [EnquiryType, string][];
+---
+
+<div class="form-card">
+  {heading && <h2 id={`${id}-title`}>{heading}</h2>}
+  <form
+    class="form"
+    id={id}
+    action="https://api.web3forms.com/submit"
+    method="POST"
+    aria-labelledby={heading ? `${id}-title` : undefined}
+    data-sending={t.sending}
+    data-success={t.success}
+    data-error={`${t.error} ${site.email}`}
+  >
+    <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+    <input type="hidden" name="from_name" value="amsc.sa" />
+    <input type="hidden" name="subject" value="New enquiry from amsc.sa" />
+    <input type="hidden" name="language" value={lang === 'ar' ? 'Arabic' : 'English'} />
+    <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
+
+    <div class="form__row">
+      <div class="field">
+        <label for={`${id}-name`}>{t.name} <span class="req" aria-hidden="true">*</span></label>
+        <input id={`${id}-name`} name="name" type="text" autocomplete="name" required maxlength="120" />
+      </div>
+      <div class="field">
+        <label for={`${id}-type`}>{t.type}</label>
+        <select id={`${id}-type`} name="enquiry_type">
+          {types.map(([value, label]) => <option value={value} selected={value === defaultType}>{label}</option>)}
+        </select>
+      </div>
+    </div>
+
+    <div class="form__row">
+      <div class="field">
+        <label for={`${id}-email`}>{t.email} <span class="req" aria-hidden="true">*</span></label>
+        <input id={`${id}-email`} name="email" type="email" autocomplete="email" required maxlength="160" />
+      </div>
+      <div class="field">
+        <label for={`${id}-phone`}>{t.phone}</label>
+        <input id={`${id}-phone`} name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+966 5x xxx xxxx" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for={`${id}-company`}>{t.company}</label>
+      <input id={`${id}-company`} name="company" type="text" autocomplete="organization" maxlength="160" />
+    </div>
+
+    <div class="field">
+      <label for={`${id}-message`}>{t.message} <span class="req" aria-hidden="true">*</span></label>
+      <textarea id={`${id}-message`} name="message" required maxlength="4000"></textarea>
+    </div>
+
+    <label class="consent">
+      <input type="checkbox" name="consent" value="yes" required />
+      <span>{t.consent} <a href={href(lang, 'privacy')}>{t.consentLink}</a>.</span>
+    </label>
+
+    <div class="form-status" role="status" aria-live="polite"></div>
+
+    <div>
+      <button class="btn btn--primary" type="submit">{t.submit}</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const labels: Record<string, string> = {
+    general: 'General enquiry',
+    partnership: 'Partnership / investment',
+    franchise: 'Franchise',
+    supplier: 'Supplier',
+    b2b: 'Corporate orders / catering',
+    careers: 'Careers',
+    media: 'Media',
+  };
+
+  document.querySelectorAll<HTMLFormElement>('form[action*="web3forms"]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const buttonText = button.textContent;
+
+    const show = (kind: 'success' | 'error', text: string) => {
+      status.className = `form-status is-${kind}`;
+      status.textContent = text;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = new FormData(form);
+      if (String(data.get('access_key')).startsWith('YOUR_')) {
+        console.warn('Web3Forms access key is not set. Add it in src/config.ts.');
+        show('error', form.dataset.error!);
+        return;
+      }
+
+      const type = String(data.get('enquiry_type') ?? 'general');
+      data.set('subject', `[amsc.sa] ${labels[type] ?? type} — ${data.get('name')}`);
+      data.set('page', window.location.href);
+
+      button.disabled = true;
+      button.textContent = form.dataset.sending!;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: data,
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) throw new Error(json.message || res.statusText);
+        form.reset();
+        show('success', form.dataset.success!);
+      } catch (err) {
+        console.error(err);
+        show('error', form.dataset.error!);
+      } finally {
+        button.disabled = false;
+        button.textContent = buttonText;
+      }
+    });
+  });
+</script>

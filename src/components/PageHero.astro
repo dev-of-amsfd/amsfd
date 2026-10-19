@@ -1,0 +1,31 @@
+---
+import Stripes from './Stripes.astro';
+import { useUi } from '../i18n/ui';
+import { href, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  heading: string;
+  lead?: string;
+  crumbs?: { label: string; href?: string }[];
+}
+
+const { lang, heading, lead, crumbs = [] } = Astro.props;
+const t = useUi(lang);
+---
+
+<section class="page-hero">
+  <Stripes />
+  <img class="watermark" src="/images/brands/amsc-mark-white.png" alt="" width="510" height="442" />
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li><a href={href(lang, 'home')}>{t.nav.home}</a></li>
+        {crumbs.map((c) => <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
+      </ol>
+    </nav>
+    <h1>{heading}</h1>
+    {lead && <p>{lead}</p>}
+    <slot />
+  </div>
+</section>

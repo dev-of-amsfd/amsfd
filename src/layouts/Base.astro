@@ -1,0 +1,80 @@
+---
+import '@fontsource/ibm-plex-sans-arabic/400.css';
+import '@fontsource/ibm-plex-sans-arabic/500.css';
+import '@fontsource/ibm-plex-sans-arabic/600.css';
+import '@fontsource/ibm-plex-sans-arabic/700.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { useUi } from '../i18n/ui';
+import { href, type Lang, type RouteKey } from '../i18n/routes';
+import { site } from '../config';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  route?: RouteKey;
+  noindex?: boolean;
+}
+
+const { lang, title, description, route, noindex = false } = Astro.props;
+const t = useUi(lang);
+const other: Lang = lang === 'ar' ? 'en' : 'ar';
+const altHref = route ? href(other, route) : href(other, 'home');
+const fullTitle = route === 'home' ? `${t.companyName} | ${title}` : `${title} | ${t.companyName}`;
+const canonical = route ? new URL(href(lang, route), site.domain).href : undefined;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Abdullah Al-Subaie Trading Company',
+  alternateName: 'شركة عبدالله السبيعي التجارية',
+  url: site.domain,
+  logo: `${site.domain}/images/brands/amsc-logo-full.png`,
+  email: site.email,
+  foundingDate: String(site.founded),
+  address: { '@type': 'PostalAddress', addressLocality: 'Jeddah', addressCountry: 'SA' },
+};
+---
+
+<!doctype html>
+<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {
+      route && (
+        <>
+          <link rel="alternate" hreflang="ar" href={new URL(href('ar', route), site.domain).href} />
+          <link rel="alternate" hreflang="en" href={new URL(href('en', route), site.domain).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL(href('ar', route), site.domain).href} />
+        </>
+      )
+    }
+    <meta name="theme-color" content="#0a1630" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.companyName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_SA' : 'en_US'} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={`${site.domain}/images/og-image.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {route === 'home' && <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <Header lang={lang} current={route} altHref={altHref} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

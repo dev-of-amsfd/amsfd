@@ -1,0 +1,182 @@
+---
+import Icon from './Icon.astro';
+import { useUi } from '../i18n/ui';
+import { href, type Lang, type RouteKey } from '../i18n/routes';
+import { companies } from '../data/companies';
+import { site, socials } from '../config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useUi(lang);
+const explore: RouteKey[] = ['about', 'sectors', 'sustainability', 'partnerships', 'careers', 'news', 'contact'];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <svg class="site-footer__edge" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+    <polygon points="0,24 1200,24 1200,0 980,0 966,24 940,24 954,0 0,0" fill="#004aad" />
+  </svg>
+  <div class="container site-footer__grid">
+    <div class="site-footer__about">
+      <img src="/images/brands/amsc-logo-full-white.png" alt={t.companyName} width="150" height="133" />
+      <p>{t.footer.about}</p>
+      {
+        socials.length > 0 && (
+          <ul class="socials">
+            {socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener">
+                  <Icon name={s.name} size={20} label={s.name} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div>
+      <h2>{t.footer.explore}</h2>
+      <ul>
+        {explore.map((key) => (
+          <li><a href={href(lang, key)}>{t.nav[key as keyof typeof t.nav]}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2>{t.footer.group}</h2>
+      <ul>
+        {companies.map((c) => (
+          <li><a href={href(lang, c.route)}>{c.name[lang]}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2>{t.footer.contact}</h2>
+      <ul class="contact-list">
+        <li><Icon name="mail" size={18} /><a href={`mailto:${site.email}`} dir="ltr">{site.email}</a></li>
+        <li><Icon name="phone" size={18} /><a href={`tel:${site.phoneHref}`} dir="ltr">{site.phone}</a></li>
+        <li><Icon name="pin" size={18} /><span>{t.footer.location}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>© {year} {t.companyName}. {t.footer.rights}.</p>
+    <ul>
+      <li><a href={href(lang, 'privacy')}>{t.footer.privacy}</a></li>
+      <li><a href={href(lang, 'terms')}>{t.footer.terms}</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-block: 72px 28px;
+    background: var(--navy);
+    color: var(--muted-on-dark);
+    font-size: 0.97rem;
+  }
+
+  .site-footer__edge {
+    position: absolute;
+    inset: 0 0 auto;
+    width: 100%;
+    height: 10px;
+  }
+
+  [dir='rtl'] .site-footer__edge {
+    transform: scaleX(-1);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+
+  @media (min-width: 960px) {
+    .site-footer__grid {
+      grid-template-columns: 1.6fr 1fr 1.2fr 1.2fr;
+    }
+  }
+
+  .site-footer__about img {
+    width: 150px;
+    margin-block-end: 18px;
+  }
+
+  .site-footer__about p {
+    max-width: 340px;
+  }
+
+  .site-footer h2 {
+    margin-block-end: 16px;
+    font-size: 1rem;
+    color: var(--white);
+  }
+
+  .site-footer ul {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .site-footer a {
+    color: var(--muted-on-dark);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+
+  .contact-list li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .contact-list :global(.icon) {
+    flex: none;
+    color: #6fa3ff;
+  }
+
+  .socials {
+    display: flex !important;
+    gap: 10px !important;
+    margin-block-start: 18px;
+  }
+
+  .socials a {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--navy-2);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-block-start: 56px;
+    padding-block-start: 24px;
+    border-block-start: 1px solid rgb(255 255 255 / 10%);
+    font-size: 0.9rem;
+  }
+
+  .site-footer__bottom ul {
+    display: flex;
+    gap: 20px;
+  }
+</style>

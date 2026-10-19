@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { sectors, sectorsPage, home } from '../data/content';
+import { companyByKey, type Company } from '../data/companies';
+import { href, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = sectorsPage[lang];
+
+// Which group companies each sector links to.
+const related: Record<string, Company['key'][]> = {
+  manufacturing: ['food'],
+  chains: ['khaliat', 'kbagi'],
+  catering: ['khaliat', 'food'],
+  brands: ['khaliat', 'kbagi'],
+  quality: ['food'],
+  investment: [],
+};
+---
+
+<Base lang={lang} title={c.title} description={c.description} route="sectors">
+  <PageHero lang={lang} heading={c.heading} lead={c.lead} crumbs={[{ label: c.title }]} />
+
+  <section class="section">
+    <div class="container sector-list">
+      {
+        sectors[lang].map((s, i) => (
+          <article class="sector-row" id={s.id}>
+            <div class="sector-row__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</div>
+            <div class="sector-row__icon"><Icon name={s.icon} size={30} /></div>
+            <div class="sector-row__body">
+              <h2>{s.title}</h2>
+              <p class="lead">{s.text}</p>
+              <p>{s.detail}</p>
+              {related[s.id].length > 0 && (
+                <div class="sector-row__related">
+                  <span>{c.related}:</span>
+                  {related[s.id].map((key) => {
+                    const co = companyByKey(key);
+                    return <a href={href(lang, co.route)} style={`--brand:${co.colors.primary}`}>{co.name[lang]}</a>;
+                  })}
+                </div>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand heading={home[lang].ctaHeading} text={home[lang].ctaText} primary={{ label: home[lang].ctaButton, href: href(lang, 'contact') }} secondary={{ label: home[lang].ctaSecondary, href: href(lang, 'partnerships') }} />
+</Base>
+
+<style>
+  .sector-list {
+    display: grid;
+  }
+
+  .sector-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px 28px;
+    padding-block: clamp(28px, 4vw, 48px);
+    border-block-end: 1px solid var(--line);
+    scroll-margin-top: 100px;
+  }
+
+  .sector-row:first-child {
+    padding-block-start: 0;
+  }
+
+  @media (min-width: 860px) {
+    .sector-row {
+      grid-template-columns: 80px 72px 1fr;
+    }
+  }
+
+  .sector-row__num {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--line);
+  }
+
+  @media (max-width: 859px) {
+    .sector-row__num {
+      display: none;
+    }
+  }
+
+  .sector-row__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  .sector-row__body {
+    max-width: 780px;
+  }
+
+  .sector-row h2 {
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
+    margin-block-end: 10px;
+  }
+
+  .sector-row .lead {
+    margin-block-end: 10px;
+    color: var(--ink);
+  }
+
+  .sector-row p:not(.lead) {
+    color: var(--muted);
+  }
+
+  .sector-row__related {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-block-start: 18px;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .sector-row__related a {
+    padding: 4px 14px;
+    border: 1.5px solid var(--brand);
+    border-radius: 999px;
+    color: var(--brand);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .sector-row__related a:hover {
+    background: var(--brand);
+    color: var(--white);
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { sustainability, home } from '../data/content';
+import { href, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = sustainability[lang];
+---
+
+<Base lang={lang} title={c.title} description={c.description} route="sustainability">
+  <PageHero lang={lang} heading={c.heading} lead={c.lead} crumbs={[{ label: c.title }]} />
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--3">
+        {
+          c.items.map((item) => (
+            <div class="card card--accent">
+              <div class="card__icon"><Icon name={item.icon} /></div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="note">{c.note}</p>
+    </div>
+  </section>
+
+  <section class="section section--mist vision">
+    <div class="container vision__inner">
+      <span class="vision__year" aria-hidden="true">2030</span>
+      <div>
+        <h2>{c.items[5].title}</h2>
+        <p class="lead">{c.items[5].text}</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand heading={home[lang].ctaHeading} text={home[lang].ctaText} primary={{ label: home[lang].ctaButton, href: href(lang, 'contact') }} />
+</Base>
+
+<style>
+  .note {
+    margin-block-start: 32px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .vision__inner {
+    display: grid;
+    gap: 24px;
+    align-items: center;
+  }
+
+  @media (min-width: 800px) {
+    .vision__inner {
+      grid-template-columns: auto 1fr;
+      gap: 56px;
+    }
+  }
+
+  .vision__year {
+    font-size: clamp(4rem, 3rem + 6vw, 8rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--blue);
+    letter-spacing: -0.02em;
+  }
+
+  .vision h2 {
+    font-size: var(--fs-h2);
+    margin-block-end: 12px;
+  }
+</style>

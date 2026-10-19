@@ -1,0 +1,287 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CompanyCard from '../components/CompanyCard.astro';
+import { companiesPage } from '../data/content';
+import { companies, companyByKey, type Company } from '../data/companies';
+import { href, type Lang } from '../i18n/routes';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  company: Company['key'];
+}
+
+const { lang, company } = Astro.props;
+const co = companyByKey(company);
+const c = companiesPage[lang];
+const t = useUi(lang);
+const others = companies.filter((x) => x.key !== co.key);
+const enquiry = co.key === 'food' ? 'b2b' : co.key === 'khaliat' ? 'franchise' : 'general';
+---
+
+<Base lang={lang} title={co.name[lang]} description={co.summary[lang]} route={co.route}>
+  <section class="co-hero" style={`--brand: ${co.colors.primary}; --brand-surface: ${co.colors.surface};`}>
+    <div class="container co-hero__inner">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li><a href={href(lang, 'home')}>{t.nav.home}</a></li>
+            <li><a href={href(lang, 'companies')}>{c.title}</a></li>
+            <li><span aria-current="page">{co.name[lang]}</span></li>
+          </ol>
+        </nav>
+        <span class="co-hero__kind">{co.kind[lang]}{co.status === 'soon' && <span class="co-hero__badge">{t.comingSoon}</span>}</span>
+        <h1>{co.name[lang]}</h1>
+        <p>{co.summary[lang]}</p>
+      </div>
+      <div class="co-hero__logo">
+        <img src={co.logo} alt={co.name[lang]} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style={`--brand: ${co.colors.primary}; --brand-surface: ${co.colors.surface};`}>
+    <div class="container split split--start">
+      <div class="prose">
+        {co.body[lang].map((p, i) => <p class={i === 0 ? 'lead' : ''}>{p}</p>)}
+        {co.status === 'soon' && <p class="soon-note">{c.soonNote}</p>}
+
+        <h2 class="sub">{c.highlights}</h2>
+        <ul class="check-list">
+          {co.highlights[lang].map((h) => <li><Icon name="check" />{h}</li>)}
+        </ul>
+
+        <div class="btn-row actions">
+          <a class="btn btn--brand" href={`${href(lang, 'contact')}?type=${enquiry}`}>{c.contactCta}<Icon name="arrow" class="icon--dir" /></a>
+          {co.links.slice(0, 1).map((l) => (
+            <a class="btn btn--outline btn--brand-outline" href={l.url} target="_blank" rel="noopener">{t.visit}<Icon name="external" /></a>
+          ))}
+        </div>
+      </div>
+
+      <aside class="side">
+        {co.photo && (
+          <figure class="photo">
+            <img src={co.photo.src} alt={co.photo.alt[lang]} loading="lazy" />
+          </figure>
+        )}
+        <div class="facts">
+          <h2>{c.facts}</h2>
+          <dl>
+            {co.facts.map((f) => (
+              <div>
+                <dt>{f.label[lang]}</dt>
+                <dd>{f.value[lang]}</dd>
+              </div>
+            ))}
+          </dl>
+          {co.links.length > 0 && (
+            <>
+              <h2>{c.links}</h2>
+              <ul class="links">
+                {co.links.map((l) => (
+                  <li><a href={l.url} target="_blank" rel="noopener">{l.label[lang]}<Icon name="external" size={16} /></a></li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--mist">
+    <div class="container">
+      <div class="section-head"><h2>{c.others}</h2></div>
+      <div class="grid grid--2">
+        {others.map((o) => <CompanyCard company={o} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .co-hero {
+    padding-block: clamp(48px, 7vw, 88px);
+    background: var(--brand-surface);
+    border-block-end: 6px solid var(--brand);
+  }
+
+  .co-hero__inner {
+    display: grid;
+    gap: 36px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .co-hero__inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .co-hero .breadcrumb,
+  .co-hero .breadcrumb a {
+    color: var(--muted);
+  }
+
+  .co-hero .breadcrumb a:hover {
+    color: var(--brand);
+  }
+
+  .co-hero__kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-block-end: 10px;
+    font-weight: 600;
+    color: var(--brand);
+  }
+
+  .co-hero__badge {
+    padding: 2px 12px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--white);
+    font-size: 0.8rem;
+  }
+
+  .co-hero h1 {
+    font-size: var(--fs-h1);
+  }
+
+  .co-hero p {
+    max-width: 600px;
+    margin-block-start: 14px;
+    font-size: var(--fs-lead);
+    color: var(--muted);
+  }
+
+  .co-hero__logo {
+    display: grid;
+    place-items: center;
+    padding: 36px;
+    min-height: 240px;
+    background: var(--white);
+    border-radius: calc(var(--radius) * 1.5);
+    box-shadow: var(--shadow);
+  }
+
+  .co-hero__logo img {
+    max-height: 200px;
+    max-width: 80%;
+    object-fit: contain;
+  }
+
+  .lead {
+    color: var(--ink) !important;
+  }
+
+  .soon-note {
+    padding: 14px 18px;
+    border-inline-start: 4px solid var(--brand);
+    background: var(--brand-surface);
+    border-radius: var(--radius-sm);
+    color: var(--ink) !important;
+  }
+
+  .sub {
+    margin-block-start: 2em !important;
+    font-size: 1.3rem;
+  }
+
+  .check-list :global(.icon) {
+    background: var(--brand-surface);
+    color: var(--brand);
+  }
+
+  .actions {
+    margin-block-start: 2em !important;
+  }
+
+  .btn--brand {
+    background: var(--brand);
+    color: var(--white);
+  }
+
+  .btn--brand:hover {
+    filter: brightness(0.92);
+  }
+
+  .btn--brand-outline {
+    color: var(--brand);
+  }
+
+  .side {
+    display: grid;
+    gap: 20px;
+  }
+
+  .photo {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .photo img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .facts {
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .facts h2 {
+    font-size: 1.05rem;
+    margin-block-end: 14px;
+  }
+
+  .facts h2:not(:first-child) {
+    margin-block-start: 24px;
+  }
+
+  .facts dl {
+    display: grid;
+    margin: 0;
+  }
+
+  .facts dl div {
+    display: grid;
+    gap: 2px;
+    padding-block: 12px;
+    border-block-start: 1px solid var(--line);
+  }
+
+  .facts dt {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .links {
+    display: grid;
+    gap: 8px;
+    list-style: none;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+</style>

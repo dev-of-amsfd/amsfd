@@ -1,0 +1,104 @@
+---
+import Icon from './Icon.astro';
+import type { Company } from '../data/companies';
+import { href, type Lang } from '../i18n/routes';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  company: Company;
+  lang: Lang;
+}
+
+const { company: c, lang } = Astro.props;
+const t = useUi(lang);
+---
+
+<a class="company-card" href={href(lang, c.route)} style={`--brand: ${c.colors.primary}; --brand-surface: ${c.colors.surface};`}>
+  <div class="company-card__logo">
+    <img src={c.logo} alt={c.name[lang]} loading="lazy" />
+    {c.status === 'soon' && <span class="company-card__badge">{t.comingSoon}</span>}
+  </div>
+  <div class="company-card__body">
+    <span class="company-card__kind">{c.kind[lang]}</span>
+    <h3>{c.name[lang]}</h3>
+    <p>{c.summary[lang]}</p>
+    <span class="text-link">{t.readMore}<Icon name="arrow" class="icon--dir" /></span>
+  </div>
+</a>
+
+<style>
+  .company-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  }
+
+  .company-card:hover {
+    border-color: transparent;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  .company-card__logo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 190px;
+    padding: 28px;
+    background: var(--brand-surface);
+    border-block-end: 4px solid var(--brand);
+  }
+
+  .company-card__logo img {
+    max-height: 130px;
+    max-width: 78%;
+    object-fit: contain;
+  }
+
+  .company-card__badge {
+    position: absolute;
+    inset-block-start: 14px;
+    inset-inline-end: 14px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .company-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+  }
+
+  .company-card__kind {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--brand);
+  }
+
+  .company-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .company-card p {
+    flex: 1;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .company-card .text-link {
+    margin-block-start: 8px;
+    color: var(--brand);
+  }
+</style>

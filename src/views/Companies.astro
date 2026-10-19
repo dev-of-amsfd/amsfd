@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CompanyCard from '../components/CompanyCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { companiesPage, home } from '../data/content';
+import { companies } from '../data/companies';
+import { href, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = companiesPage[lang];
+---
+
+<Base lang={lang} title={c.title} description={c.description} route="companies">
+  <PageHero lang={lang} heading={c.heading} lead={c.lead} crumbs={[{ label: c.title }]} />
+
+  <section class="section section--mist">
+    <div class="container grid grid--3">
+      {companies.map((co) => <CompanyCard company={co} lang={lang} />)}
+    </div>
+  </section>
+
+  <CtaBand heading={home[lang].ctaHeading} text={home[lang].ctaText} primary={{ label: home[lang].ctaButton, href: href(lang, 'contact') }} secondary={{ label: home[lang].ctaSecondary, href: href(lang, 'partnerships') }} />
+</Base>

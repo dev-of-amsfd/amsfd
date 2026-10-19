@@ -1,0 +1,260 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { about, home } from '../data/content';
+import { companies } from '../data/companies';
+import { href, type Lang } from '../i18n/routes';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = about[lang];
+const t = useUi(lang);
+---
+
+<Base lang={lang} title={c.title} description={c.description} route="about">
+  <PageHero lang={lang} heading={c.heading} lead={c.lead} crumbs={[{ label: c.title }]} />
+
+  <section class="section">
+    <div class="container split split--start">
+      <div class="prose">
+        <span class="eyebrow">{c.storyHeading}</span>
+        {c.story.map((p, i) => <p class={i === 0 ? 'lead' : ''}>{p}</p>)}
+      </div>
+      <div class="vm">
+        {
+          [c.vision, c.mission].map((b, i) => (
+            <div class:list={['vm__item', { 'vm__item--dark': i === 0 }]}>
+              <h2>{b.title}</h2>
+              <p>{b.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist">
+    <div class="container">
+      <SectionHead heading={c.valuesHeading} center />
+      <div class="grid values">
+        {
+          c.values.map((v) => (
+            <div class="card">
+              <div class="card__icon"><Icon name={v.icon} /></div>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHead heading={c.structureHeading} lead={c.structureLead} center />
+      <div class="tree">
+        <div class="tree__root">
+          <img src="/images/brands/amsc-logo-full.png" alt={t.companyName} width="170" height="151" loading="lazy" />
+        </div>
+        <ul class="tree__children">
+          {
+            companies.map((co) => (
+              <li>
+                <a href={href(lang, co.route)} style={`--brand: ${co.colors.primary}; --brand-surface: ${co.colors.surface};`}>
+                  <img src={co.logo} alt="" loading="lazy" />
+                  <strong>{co.name[lang]}</strong>
+                  <span>{co.kind[lang]}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--paper">
+    <div class="container split">
+      <div class="logo-panel">
+        <img src="/images/brands/amsc-logo-full.png" alt={t.companyName} width="320" height="285" loading="lazy" />
+      </div>
+      <div>
+        <h2 class="h2">{c.logoHeading}</h2>
+        <p class="lead logo-text">{c.logoText}</p>
+        <ul class="swatches" aria-label="Brand colours">
+          <li><span style="background:#004aad"></span>#004AAD</li>
+          <li><span style="background:#000000"></span>#000000</li>
+          <li><span style="background:#fffbfa; border:1px solid var(--line)"></span>#FFFBFA</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand heading={home[lang].ctaHeading} text={home[lang].ctaText} primary={{ label: home[lang].ctaButton, href: href(lang, 'contact') }} />
+</Base>
+
+<style>
+  .h2 {
+    font-size: var(--fs-h2);
+  }
+
+  .vm {
+    display: grid;
+    gap: 16px;
+  }
+
+  .vm__item {
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: var(--radius);
+    background: var(--blue-50);
+  }
+
+  .vm__item h2 {
+    font-size: 1.35rem;
+    margin-block-end: 10px;
+  }
+
+  .vm__item p {
+    color: var(--muted);
+  }
+
+  .vm__item--dark {
+    background: var(--blue);
+  }
+
+  .vm__item--dark h2,
+  .vm__item--dark p {
+    color: var(--white);
+  }
+
+  .values {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+
+  .tree {
+    display: grid;
+    justify-items: center;
+  }
+
+  .tree__root {
+    position: relative;
+    padding: 24px 36px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .tree__root img {
+    width: 150px;
+  }
+
+  .tree__root::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 50%;
+    width: 2px;
+    height: 32px;
+    background: var(--line);
+  }
+
+  .tree__children {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+    margin-block-start: 32px;
+    padding-block-start: 32px;
+    border-block-start: 2px solid var(--line);
+    list-style: none;
+  }
+
+  @media (min-width: 800px) {
+    .tree__children {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .tree__children a {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 24px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    background: var(--brand-surface);
+    border-block-start: 4px solid var(--brand);
+    border-radius: var(--radius);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .tree__children a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .tree__children img {
+    height: 80px;
+    width: auto;
+    margin-block-end: 8px;
+    object-fit: contain;
+  }
+
+  .tree__children span {
+    font-size: 0.9rem;
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .logo-panel {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    background: var(--mist);
+    border-radius: calc(var(--radius) * 1.5);
+  }
+
+  .logo-panel img {
+    width: min(60%, 300px);
+  }
+
+  .logo-text {
+    margin-block: 16px 24px;
+  }
+
+  .swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    list-style: none;
+    direction: ltr;
+  }
+
+  [dir='rtl'] .swatches {
+    justify-content: flex-end;
+  }
+
+  .swatches li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .swatches span {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+</style>

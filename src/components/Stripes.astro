@@ -1,0 +1,15 @@
+---
+// Angled bands taken from the identity's notebook and business-card mockups.
+interface Props {
+  tone?: 'dark' | 'blue';
+}
+const { tone = 'dark' } = Astro.props;
+const main = tone === 'blue' ? '#ffffff' : '#004aad';
+const mainOpacity = tone === 'blue' ? 0.14 : 1;
+---
+
+<svg class="stripes" viewBox="0 0 560 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+  <polygon points="250,600 330,600 676,0 596,0" fill={main} opacity={mainOpacity} />
+  <polygon points="372,600 392,600 738,0 718,0" fill="#ffffff" opacity={tone === 'blue' ? 0.22 : 0.85} />
+  <polygon points="430,600 560,600 560,560 906,0 776,0" fill={main} opacity={tone === 'blue' ? 0.1 : 0.55} />
+</svg>

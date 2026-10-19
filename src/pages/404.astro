@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import { notFound } from '../data/content';
+
+const ar = notFound.ar;
+const en = notFound.en;
+---
+
+<Base lang="ar" title={ar.title} description={ar.text} noindex>
+  <section class="section nf">
+    <div class="container nf__inner">
+      <span class="nf__code" aria-hidden="true">404</span>
+      <h1>{ar.heading}</h1>
+      <p>{ar.text}</p>
+      <a class="btn btn--primary" href="/">{ar.home}</a>
+      <div class="nf__en" lang="en" dir="ltr">
+        <h2>{en.heading}</h2>
+        <p>{en.text}</p>
+        <a class="btn btn--outline" href="/en/">{en.home}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf__inner {
+    max-width: 640px;
+    text-align: center;
+  }
+
+  .nf__code {
+    display: block;
+    font-size: clamp(5rem, 4rem + 6vw, 9rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--blue);
+  }
+
+  .nf h1 {
+    font-size: var(--fs-h1);
+    margin-block: 12px;
+  }
+
+  .nf p {
+    margin-block-end: 24px;
+    color: var(--muted);
+  }
+
+  .nf__en {
+    margin-block-start: 56px;
+    padding-block-start: 40px;
+    border-block-start: 1px solid var(--line);
+  }
+
+  .nf__en h2 {
+    font-size: 1.4rem;
+    margin-block-end: 8px;
+  }
+</style>

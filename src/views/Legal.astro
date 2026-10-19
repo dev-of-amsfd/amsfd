@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../config';
+import { type Lang } from '../i18n/routes';
+
+// Draft legal text. Have it reviewed before launch (see CONTENT-TODO.md).
+
+interface Props {
+  lang: Lang;
+  doc: 'privacy' | 'terms';
+}
+
+const { lang, doc } = Astro.props;
+
+const docs = {
+  privacy: {
+    ar: {
+      title: 'سياسة الخصوصية',
+      description: 'كيف تجمع شركة عبدالله السبيعي التجارية بياناتك الشخصية وتستخدمها وتحميها.',
+      updated: 'آخر تحديث: أكتوبر 2026',
+      sections: [
+        { h: 'مقدمة', p: ['تلتزم شركة عبدالله السبيعي التجارية («الشركة»، «نحن») بحماية بياناتك الشخصية وفق نظام حماية البيانات الشخصية في المملكة العربية السعودية ولوائحه التنفيذية. توضّح هذه السياسة البيانات التي نجمعها عبر موقع amsc.sa وكيف نستخدمها.'] },
+        { h: 'البيانات التي نجمعها', p: ['عند استخدامك نموذج التواصل نجمع: الاسم، والبريد الإلكتروني، ورقم الجوال، واسم الجهة، ونوع الاستفسار، ونص الرسالة. ولا نجمع أي بيانات أخرى بشكل مباشر، ولا نستخدم ملفات تعريف الارتباط لأغراض الإعلان.'] },
+        { h: 'كيف نستخدم بياناتك', p: ['نستخدم بياناتك فقط للرد على استفسارك ومتابعته، سواء كان استفسارًا عامًا أو طلب شراكة أو توريد أو توظيف. ولا نبيع بياناتك ولا نشاركها مع أطراف أخرى لأغراض تسويقية.'] },
+        { h: 'مزودو الخدمة', p: ['تُرسل رسائل النموذج عبر خدمة Web3Forms التي تنقلها إلى بريدنا الإلكتروني. وتعرض صفحة «تواصل معنا» خريطة من Google Maps قد تجمع بيانات وفق سياسة Google. ويُستضاف الموقع لدى Hostinger.'] },
+        { h: 'مدة الاحتفاظ', p: ['نحتفظ بالرسائل طوال المدة اللازمة للرد على استفسارك ومتابعته، ثم نحذفها ما لم يتطلب نظام أو علاقة تعاقدية الاحتفاظ بها مدة أطول.'] },
+        { h: 'حقوقك', p: ['يحق لك طلب الاطلاع على بياناتك، أو تصحيحها، أو حذفها، أو سحب موافقتك على معالجتها. لممارسة هذه الحقوق راسلنا على البريد أدناه.'] },
+        { h: 'التواصل', p: [`لأي سؤال عن هذه السياسة: ${site.email}`] },
+      ],
+    },
+    en: {
+      title: 'Privacy Policy',
+      description: 'How Abdullah Al-Subaie Trading Company collects, uses and protects your personal data.',
+      updated: 'Last updated: October 2026',
+      sections: [
+        { h: 'Introduction', p: ['Abdullah Al-Subaie Trading Company ("the Company", "we") is committed to protecting your personal data in line with the Personal Data Protection Law of the Kingdom of Saudi Arabia and its implementing regulations. This policy explains what we collect through amsc.sa and how we use it.'] },
+        { h: 'What we collect', p: ['When you use our contact form we collect your name, email address, mobile number, organisation, enquiry type and message. We do not collect other data directly, and we do not use cookies for advertising.'] },
+        { h: 'How we use it', p: ['We use your data only to answer and follow up on your enquiry, whether it is a general question or a partnership, supply or job enquiry. We do not sell your data or share it with others for marketing.'] },
+        { h: 'Service providers', p: ['Form messages are sent through Web3Forms, which forwards them to our email. The Contact page shows a Google Maps embed, which may collect data under Google\'s own policy. The site is hosted by Hostinger.'] },
+        { h: 'How long we keep it', p: ['We keep messages for as long as needed to answer and follow up on your enquiry, then delete them unless a law or contract requires us to keep them longer.'] },
+        { h: 'Your rights', p: ['You may ask to access, correct or delete your data, or withdraw your consent to its processing. To do so, email us at the address below.'] },
+        { h: 'Contact', p: [`Questions about this policy: ${site.email}`] },
+      ],
+    },
+  },
+  terms: {
+    ar: {
+      title: 'الشروط والأحكام',
+      description: 'شروط استخدام موقع شركة عبدالله السبيعي التجارية.',
+      updated: 'آخر تحديث: أكتوبر 2026',
+      sections: [
+        { h: 'القبول', p: ['باستخدامك موقع amsc.sa فإنك توافق على هذه الشروط. إن لم توافق عليها، يُرجى عدم استخدام الموقع.'] },
+        { h: 'المحتوى', p: ['المحتوى المنشور في الموقع لأغراض تعريفية عامة، ونسعى إلى أن يكون دقيقًا ومحدّثًا، لكنه لا يُعد عرضًا تعاقديًا. وقد نحدّثه أو نعدّله دون إشعار مسبق.'] },
+        { h: 'الملكية الفكرية', p: ['جميع الشعارات والعلامات التجارية والتصاميم والنصوص في الموقع، ومنها شعارات الشركة وخلية خالد وكباجي الغربية، مملوكة للشركة أو للجهات التابعة لها. ولا يجوز نسخها أو استخدامها دون إذن كتابي مسبق.'] },
+        { h: 'الروابط الخارجية', p: ['قد يحتوي الموقع على روابط لمواقع أخرى، مثل مواقع علاماتنا التجارية أو حساباتها في وسائل التواصل. ولسنا مسؤولين عن محتوى تلك المواقع أو سياساتها.'] },
+        { h: 'حدود المسؤولية', p: ['يُقدَّم الموقع «كما هو». ولا تتحمل الشركة مسؤولية أي ضرر ينتج عن استخدام الموقع أو تعذّر الوصول إليه، في حدود ما يسمح به النظام.'] },
+        { h: 'النظام المطبّق', p: ['تخضع هذه الشروط لأنظمة المملكة العربية السعودية، وتختص المحاكم السعودية بالنظر في أي نزاع ينشأ عنها.'] },
+      ],
+    },
+    en: {
+      title: 'Terms of Use',
+      description: 'Terms of use for the Abdullah Al-Subaie Trading Company website.',
+      updated: 'Last updated: October 2026',
+      sections: [
+        { h: 'Acceptance', p: ['By using amsc.sa you agree to these terms. If you do not agree, please do not use the site.'] },
+        { h: 'Content', p: ['Content on this site is for general information. We aim to keep it accurate and up to date, but it is not a contractual offer, and we may update or change it without notice.'] },
+        { h: 'Intellectual property', p: ['All logos, trademarks, designs and text on this site, including the logos of the Company, Khaliat Khalid and Kbagi Algharbia, belong to the Company or its affiliates. They may not be copied or used without prior written permission.'] },
+        { h: 'External links', p: ['The site may link to other websites, such as our brands\' sites or social media accounts. We are not responsible for their content or policies.'] },
+        { h: 'Limitation of liability', p: ['The site is provided "as is". To the extent permitted by law, the Company is not liable for any damage arising from use of the site or from it being unavailable.'] },
+        { h: 'Governing law', p: ['These terms are governed by the laws of the Kingdom of Saudi Arabia, and the Saudi courts have jurisdiction over any dispute arising from them.'] },
+      ],
+    },
+  },
+};
+
+const c = docs[doc][lang];
+---
+
+<Base lang={lang} title={c.title} description={c.description} route={doc}>
+  <PageHero lang={lang} heading={c.title} lead={c.updated} crumbs={[{ label: c.title }]} />
+  <section class="section">
+    <div class="container legal">
+      {
+        c.sections.map((s) => (
+          <section>
+            <h2>{s.h}</h2>
+            {s.p.map((p) => <p>{p}</p>)}
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    max-width: calc(780px + var(--gutter) * 2);
+  }
+
+  .legal section + section {
+    margin-block-start: 36px;
+  }
+
+  .legal h2 {
+    font-size: 1.3rem;
+    margin-block-end: 10px;
+  }
+
+  .legal p {
+    color: var(--muted);
+  }
+</style>

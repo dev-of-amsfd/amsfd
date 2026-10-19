@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { careers } from '../data/content';
+import { site } from '../config';
+import { type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = careers[lang];
+---
+
+<Base lang={lang} title={c.title} description={c.description} route="careers">
+  <PageHero lang={lang} heading={c.heading} lead={c.lead} crumbs={[{ label: c.title }]} />
+
+  <section class="section">
+    <div class="container">
+      <SectionHead heading={c.whyHeading} />
+      <div class="grid grid--3">
+        {
+          c.why.map((w) => (
+            <div class="card card--accent">
+              <div class="card__icon"><Icon name={w.icon} /></div>
+              <h3>{w.title}</h3>
+              <p>{w.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--mist">
+    <div class="container split split--start">
+      <div>
+        <h2 class="h2">{c.areasHeading}</h2>
+        <ul class="areas">
+          {c.areas.map((a) => <li>{a}</li>)}
+        </ul>
+      </div>
+      <div class="open">
+        <h2>{c.openHeading}</h2>
+        <p>{c.openText}</p>
+        <p class="apply">
+          {c.applyText}
+          <a href={`mailto:${site.email}`} dir="ltr">{site.email}</a>
+        </p>
+        <p class="hint">{c.applyHint}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <ContactForm lang={lang} defaultType="careers" heading={c.formHeading} id="careers" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .h2 {
+    font-size: var(--fs-h2);
+    margin-block-end: 22px;
+  }
+
+  .areas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .areas li {
+    padding: 10px 18px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  .open {
+    padding: clamp(24px, 3vw, 36px);
+    background: var(--white);
+    border-radius: var(--radius);
+    border-block-start: 4px solid var(--blue);
+  }
+
+  .open h2 {
+    font-size: 1.35rem;
+    margin-block-end: 10px;
+  }
+
+  .open p {
+    color: var(--muted);
+  }
+
+  .apply {
+    margin-block-start: 16px;
+    font-weight: 600;
+    color: var(--ink) !important;
+  }
+
+  .hint {
+    margin-block-start: 6px;
+    font-size: 0.95rem;
+  }
+
+  .narrow {
+    max-width: calc(860px + var(--gutter) * 2);
+  }
+</style>
