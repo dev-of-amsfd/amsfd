@@ -12,19 +12,15 @@ interface Props {
 const { lang, current, altHref } = Astro.props;
 const t = useUi(lang);
 
-const nav: RouteKey[] = ['home', 'about', 'sectors', 'companies', 'sustainability', 'partnerships', 'careers', 'news'];
+const nav: RouteKey[] = ['about', 'sectors', 'companies', 'sustainability', 'partnerships', 'careers', 'news'];
 const isCurrent = (key: RouteKey) =>
   key === current || (key === 'companies' && (current === 'food' || current === 'khaliat' || current === 'kbagi'));
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href={href(lang, 'home')} aria-label={t.companyName}>
-      <img src="/images/brands/amsc-mark.png" alt="" width="46" height="40" />
-      <span class="brand__text">
-        <span class="brand__name">{lang === 'ar' ? 'عبدالله السبيعي' : 'Abdullah Al-Subaie'}</span>
-        <span class="brand__sub">{lang === 'ar' ? 'التجارية' : 'Trading Company'}</span>
-      </span>
+    <a class="brand" href={href(lang, 'home')}>
+      <img src="/images/brands/amsc-logo-horizontal.png" alt={t.companyName} width="1200" height="204" />
     </a>
 
     <nav class="nav" id="site-nav" aria-label={t.menu}>
@@ -75,31 +71,18 @@ const isCurrent = (key: RouteKey) =>
 
   .brand {
     display: flex;
-    align-items: center;
-    gap: 12px;
     flex: none;
-    text-decoration: none;
-    color: var(--ink);
   }
 
   .brand img {
-    width: 46px;
-    height: auto;
+    width: auto;
+    height: 46px;
   }
 
-  .brand__text {
-    display: grid;
-    line-height: 1.2;
-  }
-
-  .brand__name {
-    font-weight: 700;
-    font-size: 1.05rem;
-  }
-
-  .brand__sub {
-    font-size: 0.8rem;
-    color: var(--muted);
+  @media (max-width: 420px) {
+    .brand img {
+      height: 38px;
+    }
   }
 
   .nav__list {
@@ -154,6 +137,7 @@ const isCurrent = (key: RouteKey) =>
   }
 
   .nav__cta {
+    white-space: nowrap;
     min-height: 42px;
     padding: 8px 18px;
     font-size: 0.95rem;
@@ -175,7 +159,7 @@ const isCurrent = (key: RouteKey) =>
     display: none;
   }
 
-  @media (max-width: 1180px) {
+  @media (max-width: 1240px) {
     .nav-toggle {
       display: grid;
     }

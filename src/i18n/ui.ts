@@ -74,7 +74,7 @@ export const ui = {
       sectors: 'Sectors',
       companies: 'Companies & Brands',
       sustainability: 'Sustainability',
-      partnerships: 'Investment & Partnerships',
+      partnerships: 'Partnerships',
       careers: 'Careers',
       news: 'News',
       contact: 'Contact',
